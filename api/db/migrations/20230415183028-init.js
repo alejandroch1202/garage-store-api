@@ -1,7 +1,9 @@
 'use strict';
 const { USER_TABLE } = require('./../models/user.model');
+const { CUSTOMER_TABLE } = require('./../models/customer.model');
 const { CATEGORY_TABLE } = require('./../models/category.model');
 const { PRODUCT_TABLE } = require('./../models/product.model');
+const { ORDER_TABLE } = require('./../models/order.model');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -36,6 +38,45 @@ module.exports = {
         allowNull: true,
         type: Sequelize.DataTypes.STRING,
         field: 'recovery_token',
+      },
+    });
+    await queryInterface.createTable(CUSTOMER_TABLE, {
+      id: {
+        allowNull: false,
+        type: Sequelize.DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      name: {
+        allowNull: false,
+        type: Sequelize.DataTypes.STRING,
+      },
+      lastName: {
+        allowNull: false,
+        type: Sequelize.DataTypes.STRING,
+        field: 'last_name',
+      },
+      phone: {
+        allowNull: true,
+        type: Sequelize.DataTypes.STRING,
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DataTypes.DATE,
+        field: 'created_at',
+        defaultValue: Sequelize.NOW,
+      },
+      userId: {
+        allowNull: false,
+        type: Sequelize.DataTypes.INTEGER,
+        field: 'user_id',
+        unique: true,
+        references: {
+          model: USER_TABLE,
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
       },
     });
     await queryInterface.createTable(CATEGORY_TABLE, {
@@ -102,11 +143,38 @@ module.exports = {
         onDelete: 'SET NULL',
       },
     });
+    await queryInterface.createTable(ORDER_TABLE, {
+      id: {
+        allowNull: false,
+        type: Sequelize.DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      customerId: {
+        allowNull: false,
+        type: Sequelize.DataTypes.INTEGER,
+        field: 'customer_id',
+        references: {
+          model: CUSTOMER_TABLE,
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DataTypes.DATE,
+        field: 'created_at',
+        defaultValue: Sequelize.NOW,
+      },
+    });
   },
 
   down: async (queryInterface) => {
-    await queryInterface.dropTable(USER_TABLE);
+    await queryInterface.dropTable(ORDER_TABLE);
     await queryInterface.dropTable(PRODUCT_TABLE);
     await queryInterface.dropTable(CATEGORY_TABLE);
+    await queryInterface.dropTable(CUSTOMER_TABLE);
+    await queryInterface.dropTable(USER_TABLE);
   },
 };
