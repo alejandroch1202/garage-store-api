@@ -26,7 +26,7 @@ module.exports = {
     for (let i = 0; i < categoriesLimit; i++) {
       categories.push({
         name: faker.commerce.department(),
-        image: faker.image.imageUrl(),
+        image: faker.image.imageUrl(640, 480, 'nature', true),
         created_at: faker.date.past(),
       });
     }
@@ -34,11 +34,11 @@ module.exports = {
 
     // Seeding products table
     const products = [];
-    const productsLimit = 20;
+    const productsLimit = 100;
     for (let i = 0; i < productsLimit; i++) {
       products.push({
         name: faker.commerce.productName(),
-        image: faker.image.imageUrl(),
+        image: faker.image.imageUrl(640, 480, 'nature', true),
         description: faker.commerce.productDescription(),
         price: parseInt(faker.commerce.price()),
         created_at: faker.date.past(),
