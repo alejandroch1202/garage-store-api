@@ -4,6 +4,7 @@ const { CUSTOMER_TABLE } = require('./../models/customer.model');
 const { CATEGORY_TABLE } = require('./../models/category.model');
 const { PRODUCT_TABLE } = require('./../models/product.model');
 const { ORDER_TABLE } = require('./../models/order.model');
+const { ORDER_PRODUCT_TABLE } = require('./../models/order-product.model');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
@@ -168,9 +169,50 @@ module.exports = {
         defaultValue: Sequelize.NOW,
       },
     });
+    await queryInterface.createTable(ORDER_PRODUCT_TABLE, {
+      id: {
+        allowNull: false,
+        type: Sequelize.DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DataTypes.DATE,
+        field: 'created_at',
+        defaultValue: Sequelize.NOW,
+      },
+      amount: {
+        allowNull: false,
+        type: Sequelize.DataTypes.INTEGER,
+      },
+      orderId: {
+        allowNull: false,
+        type: Sequelize.DataTypes.INTEGER,
+        field: 'order_id',
+        references: {
+          model: ORDER_TABLE,
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+      productId: {
+        allowNull: false,
+        type: Sequelize.DataTypes.INTEGER,
+        field: 'product_id',
+        references: {
+          model: PRODUCT_TABLE,
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL',
+      },
+    });
   },
 
   down: async (queryInterface) => {
+    await queryInterface.dropTable(ORDER_PRODUCT_TABLE);
     await queryInterface.dropTable(ORDER_TABLE);
     await queryInterface.dropTable(PRODUCT_TABLE);
     await queryInterface.dropTable(CATEGORY_TABLE);
