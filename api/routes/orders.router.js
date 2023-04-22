@@ -1,6 +1,8 @@
 const express = require('express');
+const possport = require('passport');
 const OrdersService = require('./../services/orders.service');
 const validationHandler = require('./../middlewares/validation.handler');
+const { checkRoles } = require('./../middlewares/auth.handler');
 const {
   createOrderSchema,
   getOrderSchema,
@@ -12,6 +14,8 @@ const service = new OrdersService();
 
 router.post(
   '/',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin', 'customer'),
   validationHandler(createOrderSchema, 'body'),
   async (req, res, next) => {
     try {
@@ -24,17 +28,24 @@ router.post(
   }
 );
 
-router.get('/', async (req, res, next) => {
-  try {
-    const orders = await service.find();
-    res.status(200).json(orders);
-  } catch (error) {
-    next(error);
+router.get(
+  '/',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin'),
+  async (req, res, next) => {
+    try {
+      const orders = await service.find();
+      res.status(200).json(orders);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 router.get(
   '/:id',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin', 'customer'),
   validationHandler(getOrderSchema, 'params'),
   async (req, res, next) => {
     try {
@@ -49,6 +60,8 @@ router.get(
 
 router.post(
   '/:id/products',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin', 'customer'),
   validationHandler(getOrderSchema, 'params'),
   validationHandler(addItemSchema, 'body'),
   async (req, res, next) => {

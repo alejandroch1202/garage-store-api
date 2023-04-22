@@ -1,6 +1,8 @@
 const express = require('express');
+const possport = require('passport');
 const UsersService = require('./../services/users.service');
 const validationHandler = require('../middlewares/validation.handler');
+const { checkRoles } = require('./../middlewares/auth.handler');
 const {
   createUserSchema,
   getUserSchema,
@@ -12,6 +14,7 @@ const service = new UsersService();
 
 router.post(
   '/',
+  possport.authenticate('jwt', { session: false }),
   validationHandler(createUserSchema, 'body'),
   async (req, res, next) => {
     try {
@@ -24,17 +27,24 @@ router.post(
   }
 );
 
-router.get('/', async (req, res, next) => {
-  try {
-    const users = await service.find();
-    res.status(200).json(users);
-  } catch (error) {
-    next(error);
+router.get(
+  '/',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin'),
+  async (req, res, next) => {
+    try {
+      const users = await service.find();
+      res.status(200).json(users);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 router.get(
   '/:id',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin'),
   validationHandler(getUserSchema, 'params'),
   async (req, res, next) => {
     try {
@@ -49,6 +59,8 @@ router.get(
 
 router.patch(
   '/:id',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin'),
   validationHandler(getUserSchema, 'params'),
   validationHandler(updateUserSchema, 'body'),
   async (req, res, next) => {
@@ -65,6 +77,8 @@ router.patch(
 
 router.delete(
   '/:id',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin'),
   validationHandler(getUserSchema, 'params'),
   async (req, res, next) => {
     try {

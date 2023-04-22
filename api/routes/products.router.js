@@ -1,6 +1,8 @@
 const express = require('express');
+const possport = require('passport');
 const ProductsService = require('./../services/products.service');
 const validationHandler = require('./../middlewares/validation.handler');
+const { checkRoles } = require('./../middlewares/auth.handler');
 const {
   createProductSchema,
   updateProductSchema,
@@ -13,6 +15,8 @@ const service = new ProductsService();
 
 router.post(
   '/',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin', 'customer'),
   validationHandler(createProductSchema, 'body'),
   async (req, res, next) => {
     try {
@@ -40,6 +44,8 @@ router.get(
 
 router.get(
   '/:id',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin', 'customer'),
   validationHandler(getProductSchema, 'params'),
   async (req, res, next) => {
     try {
@@ -54,6 +60,8 @@ router.get(
 
 router.patch(
   '/:id',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin', 'customer'),
   validationHandler(getProductSchema, 'params'),
   validationHandler(updateProductSchema, 'body'),
   async (req, res, next) => {
@@ -70,6 +78,8 @@ router.patch(
 
 router.delete(
   '/:id',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin', 'customer'),
   validationHandler(getProductSchema, 'params'),
   async (req, res, next) => {
     try {

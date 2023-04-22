@@ -22,8 +22,6 @@ class OrdersService {
   async addItem(orderId, data) {
     const newData = { orderId, ...data };
     const newItem = await models.OrderProduct.create(newData);
-    console.log(newData);
-    console.log(newItem);
     return newItem;
   }
 

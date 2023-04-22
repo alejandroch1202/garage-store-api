@@ -1,6 +1,8 @@
 const express = require('express');
+const possport = require('passport');
 const CategoriesService = require('./../services/categories.service');
 const validationHandler = require('./../middlewares/validation.handler');
+const { checkRoles } = require('./../middlewares/auth.handler');
 const {
   createCategorySchema,
   getCategorySchema,
@@ -12,6 +14,8 @@ const service = new CategoriesService();
 
 router.post(
   '/',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin'),
   validationHandler(createCategorySchema, 'body'),
   async (req, res, next) => {
     try {
@@ -24,17 +28,24 @@ router.post(
   }
 );
 
-router.get('/', async (req, res, next) => {
-  try {
-    const categories = await service.find();
-    res.status(200).json(categories);
-  } catch (error) {
-    next(error);
+router.get(
+  '/',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin', 'customer'),
+  async (req, res, next) => {
+    try {
+      const categories = await service.find();
+      res.status(200).json(categories);
+    } catch (error) {
+      next(error);
+    }
   }
-});
+);
 
 router.get(
   '/:id',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin', 'customer'),
   validationHandler(getCategorySchema, 'params'),
   async (req, res, next) => {
     try {
@@ -49,6 +60,8 @@ router.get(
 
 router.patch(
   '/:id',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin', 'customer'),
   validationHandler(getCategorySchema, 'params'),
   validationHandler(updateCategorySchema, 'body'),
   async (req, res, next) => {
@@ -65,6 +78,8 @@ router.patch(
 
 router.delete(
   '/:id',
+  possport.authenticate('jwt', { session: false }),
+  checkRoles('admin'),
   validationHandler(getCategorySchema, 'params'),
   async (req, res, next) => {
     try {
