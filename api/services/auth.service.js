@@ -69,9 +69,9 @@ class AuthService {
 
   async sendMail(infoMail) {
     const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: config.smtpHost,
       secure: true,
-      port: 465,
+      port: config.smtpPort,
       auth: {
         user: config.emailAddress,
         pass: config.emailPassword,

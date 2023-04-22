@@ -17,6 +17,8 @@ const config = {
   recoverySecret: process.env.RECOVERY_SECRET,
   emailAddress: process.env.EMAIL_ADDRESS,
   emailPassword: process.env.EMAIL_PASSWORD,
+  smtpHost: process.env.SMTP_HOST,
+  smtpPort: process.env.SMTP_PORT,
 };
 
 module.exports = { config };
