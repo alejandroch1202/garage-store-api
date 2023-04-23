@@ -61,7 +61,7 @@ router.get(
 router.patch(
   '/:id',
   possport.authenticate('jwt', { session: false }),
-  checkRoles('admin', 'customer'),
+  checkRoles('admin'),
   validationHandler(getCategorySchema, 'params'),
   validationHandler(updateCategorySchema, 'body'),
   async (req, res, next) => {

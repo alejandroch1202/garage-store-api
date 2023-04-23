@@ -43,6 +43,7 @@ const queryProductSchema = Joi.object({
     is: Joi.exist(),
     then: price_max.required(),
   }),
+  categoryId,
 });
 
 module.exports = {

@@ -12,7 +12,6 @@ class ProductsService {
 
   async find(query) {
     const options = {
-      include: ['category'],
       where: {},
     };
 
@@ -25,6 +24,11 @@ class ProductsService {
     const { price } = query;
     if (price) {
       options.where.price = price;
+    }
+
+    const { categoryId } = query;
+    if (categoryId) {
+      options.where.categoryId = categoryId;
     }
 
     const { price_min, price_max } = query;
