@@ -1,76 +1,76 @@
-const boom = require('@hapi/boom');
-const { Op } = require('sequelize');
-const { models } = require('./../libs/sequelize');
+const boom = require('@hapi/boom')
+const { Op } = require('sequelize')
+const { models } = require('./../libs/sequelize')
 
 class ProductsService {
-  constructor() {}
+  constructor () {}
 
-  async create(data) {
-    const newProduct = await models.Product.create(data);
-    return newProduct;
+  async create (data) {
+    const newProduct = await models.Product.create(data)
+    return newProduct
   }
 
-  async find(query) {
+  async find (query) {
     const options = {
-      where: {},
-    };
+      where: {}
+    }
 
-    const { limit, offset } = query;
+    const { limit, offset } = query
     if (limit && offset) {
-      options.limit = limit;
-      options.offset = offset;
+      options.limit = limit
+      options.offset = offset
     }
 
-    const { price } = query;
+    const { price } = query
     if (price) {
-      options.where.price = price;
+      options.where.price = price
     }
 
-    const { categoryId } = query;
+    const { categoryId } = query
     if (categoryId) {
-      options.where.categoryId = categoryId;
+      options.where.categoryId = categoryId
     }
 
-    const { price_min, price_max } = query;
+    const { price_min, price_max } = query
     if (price_min && price_max) {
       options.where.price = {
         [Op.gte]: price_min,
-        [Op.lte]: price_max,
-      };
+        [Op.lte]: price_max
+      }
     }
 
-    const products = await models.Product.findAll(options);
-    return products;
+    const products = await models.Product.findAll(options)
+    return products
   }
 
-  async findOne(id) {
-    const product = await models.Product.findByPk(id);
+  async findOne (id) {
+    const product = await models.Product.findByPk(id)
     if (!product) {
-      throw boom.notFound('Product not found');
+      throw boom.notFound('Product not found')
     }
-    return product;
+    return product
   }
 
-  async update(id, changes) {
-    let product = await models.Product.findByPk(id);
+  async update (id, changes) {
+    const product = await models.Product.findByPk(id)
     if (!product) {
-      throw boom.notFound('Product not found');
+      throw boom.notFound('Product not found')
     }
-    changes = { id, ...changes };
+    changes = { id, ...changes }
     await models.Product.update(changes, {
-      where: { id },
-    });
-    return changes;
+      where: { id }
+    })
+    return changes
   }
 
-  async delete(id) {
-    const product = await models.Product.findByPk(id);
+  async delete (id) {
+    const product = await models.Product.findByPk(id)
     if (!product) {
-      throw boom.notFound('Product not found');
+      throw boom.notFound('Product not found')
     }
-    await models.Product.destroy({ where: { id } });
-    return { id };
+    await models.Product.destroy({ where: { id } })
+    return { id }
   }
 }
 
-module.exports = ProductsService;
+module.exports = ProductsService

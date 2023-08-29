@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config()
 
 const config = {
   env: process.env.NODE_ENV || 'dev',
@@ -18,7 +18,7 @@ const config = {
   emailAddress: process.env.EMAIL_ADDRESS,
   emailPassword: process.env.EMAIL_PASSWORD,
   smtpHost: process.env.SMTP_HOST,
-  smtpPort: process.env.SMTP_PORT,
-};
+  smtpPort: process.env.SMTP_PORT
+}
 
-module.exports = { config };
+module.exports = { config }

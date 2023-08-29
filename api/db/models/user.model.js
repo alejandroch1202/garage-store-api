@@ -1,57 +1,57 @@
-const { Model, DataTypes, Sequelize } = require('sequelize');
+const { Model, DataTypes, Sequelize } = require('sequelize')
 
-const USER_TABLE = 'users';
+const USER_TABLE = 'users'
 
 const UserSchema = {
   id: {
     allowNull: false,
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   email: {
     allowNull: false,
     type: DataTypes.STRING,
-    unique: true,
+    unique: true
   },
   password: {
     allowNull: false,
-    type: DataTypes.STRING,
+    type: DataTypes.STRING
   },
   recoveryToken: {
     allowNull: true,
     type: DataTypes.STRING,
-    field: 'recovery_token',
+    field: 'recovery_token'
   },
   role: {
     allowNull: false,
     type: DataTypes.STRING,
-    defaultValue: 'customer',
+    defaultValue: 'customer'
   },
   createdAt: {
     allowNull: false,
     type: DataTypes.DATE,
     field: 'created_at',
-    defaultValue: Sequelize.NOW,
-  },
-};
+    defaultValue: Sequelize.NOW
+  }
+}
 
 class User extends Model {
-  static associate(models) {
+  static associate (models) {
     this.hasOne(models.Customer, {
       as: 'customer',
-      foreignKey: 'userId',
-    });
+      foreignKey: 'userId'
+    })
   }
 
-  static config(sequelize) {
+  static config (sequelize) {
     return {
       sequelize,
       tableName: USER_TABLE,
       modelName: 'User',
-      timestamps: false,
-    };
+      timestamps: false
+    }
   }
 }
 
-module.exports = { USER_TABLE, UserSchema, User };
+module.exports = { USER_TABLE, UserSchema, User }

@@ -1,14 +1,14 @@
-const boom = require('@hapi/boom');
+const boom = require('@hapi/boom')
 
-function validationHandler(schema, properties) {
+function validationHandler (schema, properties) {
   return (req, res, next) => {
-    const data = req[properties];
-    const { error } = schema.validate(data, { abortEarly: false });
+    const data = req[properties]
+    const { error } = schema.validate(data, { abortEarly: false })
     if (error) {
-      next(boom.badRequest(error));
+      next(boom.badRequest(error))
     }
-    next();
-  };
+    next()
+  }
 }
 
-module.exports = validationHandler;
+module.exports = validationHandler

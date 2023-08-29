@@ -1,63 +1,63 @@
-const boom = require('@hapi/boom');
+const boom = require('@hapi/boom')
 
-const { models } = require('./../libs/sequelize');
+const { models } = require('./../libs/sequelize')
 
 class OrdersService {
-  constructor() {}
+  constructor () {}
 
-  async create(data) {
+  async create (data) {
     const customer = await models.Customer.findOne({
       where: {
-        '$user.id$': data.userId,
+        '$user.id$': data.userId
       },
-      include: ['user'],
-    });
+      include: ['user']
+    })
     if (!customer) {
-      throw boom.badRequest('Customer not found');
+      throw boom.badRequest('Customer not found')
     }
-    const newOrder = await models.Order.create({ customerId: customer.id });
-    return newOrder;
+    const newOrder = await models.Order.create({ customerId: customer.id })
+    return newOrder
   }
 
-  async addItem(orderId, data) {
-    const newData = { orderId, ...data };
-    const newItem = await models.OrderProduct.create(newData);
-    return newItem;
+  async addItem (orderId, data) {
+    const newData = { orderId, ...data }
+    const newItem = await models.OrderProduct.create(newData)
+    return newItem
   }
 
-  async find() {
-    const orders = await models.Order.findAll();
-    return orders;
+  async find () {
+    const orders = await models.Order.findAll()
+    return orders
   }
 
-  async findOne(id) {
+  async findOne (id) {
     const order = await models.Order.findByPk(id, {
       include: [
         {
           association: 'customer',
-          include: ['user'],
+          include: ['user']
         },
-        'items',
-      ],
-    });
-    return order;
+        'items'
+      ]
+    })
+    return order
   }
 
-  async findByUser(userId) {
+  async findByUser (userId) {
     const orders = await models.Order.findAll({
       where: {
-        '$customer.user.id$': userId,
+        '$customer.user.id$': userId
       },
       include: [
         {
           association: 'customer',
-          include: ['user'],
+          include: ['user']
         },
-        'items',
-      ],
-    });
-    return orders;
+        'items'
+      ]
+    })
+    return orders
   }
 }
 
-module.exports = OrdersService;
+module.exports = OrdersService

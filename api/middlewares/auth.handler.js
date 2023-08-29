@@ -1,25 +1,25 @@
-const boom = require('@hapi/boom');
-const { config } = require('./../config');
+const boom = require('@hapi/boom')
+const { config } = require('./../config')
 
-function checkApiKey(req, res, next) {
-  const apiKey = req.headers['gs-api-key'];
+function checkApiKey (req, res, next) {
+  const apiKey = req.headers['gs-api-key']
   if (apiKey === config.apiKey) {
-    next();
+    next()
   } else {
-    next(boom.unauthorized());
+    next(boom.unauthorized())
   }
 }
 
-function checkRoles(...roles) {
+function checkRoles (...roles) {
   return (req, res, next) => {
-    console.log(req.user);
-    const user = req.user;
+    console.log(req.user)
+    const user = req.user
     if (roles.includes(user.role)) {
-      next();
+      next()
     } else {
-      next(boom.unauthorized());
+      next(boom.unauthorized())
     }
-  };
+  }
 }
 
-module.exports = { checkApiKey, checkRoles };
+module.exports = { checkApiKey, checkRoles }

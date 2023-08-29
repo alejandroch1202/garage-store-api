@@ -1,14 +1,14 @@
-const { Model, DataTypes, Sequelize } = require('sequelize');
-const { CUSTOMER_TABLE } = require('./customer.model');
+const { Model, DataTypes, Sequelize } = require('sequelize')
+const { CUSTOMER_TABLE } = require('./customer.model')
 
-const ORDER_TABLE = 'orders';
+const ORDER_TABLE = 'orders'
 
 const OrderSchema = {
   id: {
     allowNull: false,
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   customerId: {
     allowNull: false,
@@ -16,40 +16,40 @@ const OrderSchema = {
     type: DataTypes.INTEGER,
     references: {
       model: CUSTOMER_TABLE,
-      key: 'id',
+      key: 'id'
     },
     onUpdate: 'CASCADE',
-    onDelete: 'SET NULL',
+    onDelete: 'SET NULL'
   },
   createdAt: {
     allowNull: false,
     type: DataTypes.DATE,
     field: 'created_at',
-    defaultValue: Sequelize.NOW,
-  },
-};
+    defaultValue: Sequelize.NOW
+  }
+}
 
 class Order extends Model {
-  static associate(models) {
+  static associate (models) {
     this.belongsTo(models.Customer, {
-      as: 'customer',
-    });
+      as: 'customer'
+    })
     this.belongsToMany(models.Product, {
       as: 'items',
       through: models.OrderProduct,
       foreignKey: 'orderId',
-      otherKey: 'productId',
-    });
+      otherKey: 'productId'
+    })
   }
 
-  static config(sequelize) {
+  static config (sequelize) {
     return {
       sequelize,
       tableName: ORDER_TABLE,
       modelName: 'Order',
-      timestamps: false,
-    };
+      timestamps: false
+    }
   }
 }
 
-module.exports = { Order, OrderSchema, ORDER_TABLE };
+module.exports = { Order, OrderSchema, ORDER_TABLE }

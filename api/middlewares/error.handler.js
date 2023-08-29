@@ -1,37 +1,37 @@
-const { ValidationError } = require('sequelize');
+const { ValidationError } = require('sequelize')
 
-function errorLogger(error, req, res, next) {
-  console.error(error);
-  next(error);
+function errorLogger (error, req, res, next) {
+  console.error(error)
+  next(error)
 }
 
-function errorHandler(error, req, res) {
-  res.status(500).json({ message: error.message, stack: error.stack });
+function errorHandler (error, req, res, next) {
+  res.status(500).json({ message: error.message, stack: error.stack })
 }
 
-function boomErrorHandler(error, req, res, next) {
+function boomErrorHandler (error, req, res, next) {
   if (error.isBoom) {
-    const { output } = error;
-    res.status(output.statusCode).json(output.payload);
+    const { output } = error
+    res.status(output.statusCode).json(output.payload)
   } else {
-    next(error);
+    next(error)
   }
 }
 
-function ormErrorHandler(err, req, res, next) {
+function ormErrorHandler (err, req, res, next) {
   if (err instanceof ValidationError) {
     res.status(409).json({
       statusCode: 409,
       message: err.name,
-      errors: err.errors,
-    });
+      errors: err.errors
+    })
   }
-  next(err);
+  next(err)
 }
 
 module.exports = {
   errorLogger,
   errorHandler,
   boomErrorHandler,
-  ormErrorHandler,
-};
+  ormErrorHandler
+}

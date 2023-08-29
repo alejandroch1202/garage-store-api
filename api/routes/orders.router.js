@@ -1,16 +1,16 @@
-const express = require('express');
-const possport = require('passport');
-const OrdersService = require('./../services/orders.service');
-const validationHandler = require('./../middlewares/validation.handler');
-const { checkRoles } = require('./../middlewares/auth.handler');
+const express = require('express')
+const possport = require('passport')
+const OrdersService = require('./../services/orders.service')
+const validationHandler = require('./../middlewares/validation.handler')
+const { checkRoles } = require('./../middlewares/auth.handler')
 const {
   createOrderSchema,
   getOrderSchema,
-  addItemSchema,
-} = require('./../schemas/order.schema');
+  addItemSchema
+} = require('./../schemas/order.schema')
 
-const router = express.Router();
-const service = new OrdersService();
+const router = express.Router()
+const service = new OrdersService()
 
 router.post(
   '/',
@@ -19,14 +19,14 @@ router.post(
   validationHandler(createOrderSchema, 'body'),
   async (req, res, next) => {
     try {
-      const body = req.body;
-      const newOrder = await service.create(body);
-      res.status(201).json(newOrder);
+      const body = req.body
+      const newOrder = await service.create(body)
+      res.status(201).json(newOrder)
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
-);
+)
 
 router.get(
   '/',
@@ -34,13 +34,13 @@ router.get(
   checkRoles('admin'),
   async (req, res, next) => {
     try {
-      const orders = await service.find();
-      res.status(200).json(orders);
+      const orders = await service.find()
+      res.status(200).json(orders)
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
-);
+)
 
 router.get(
   '/:id',
@@ -49,14 +49,14 @@ router.get(
   validationHandler(getOrderSchema, 'params'),
   async (req, res, next) => {
     try {
-      const { id } = req.params;
-      const order = await service.findOne(id);
-      res.status(200).json(order);
+      const { id } = req.params
+      const order = await service.findOne(id)
+      res.status(200).json(order)
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
-);
+)
 
 router.post(
   '/:id/products',
@@ -66,14 +66,14 @@ router.post(
   validationHandler(addItemSchema, 'body'),
   async (req, res, next) => {
     try {
-      const id = req.params.id;
-      const body = req.body;
-      const newItem = await service.addItem(id, body);
-      res.status(201).json(newItem);
+      const id = req.params.id
+      const body = req.body
+      const newItem = await service.addItem(id, body)
+      res.status(201).json(newItem)
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
-);
+)
 
-module.exports = router;
+module.exports = router
